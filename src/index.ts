@@ -1,5 +1,16 @@
 import express, { Express } from 'express';
 import './config.js'; // do not remove this line
+import {
+  createPostController,
+  getPostByIdController,
+  getPostsController,
+} from './controllers/PostController.js';
+import {
+  createProjectCommentController,
+  getProjectCommentByIdController,
+  getProjectCommentsController,
+} from './controllers/ProjectCommentController.js';
+import replyRoutes from './routes/ReplyRoutes.js';
 import { sessionMiddleware } from './sessionConfig.js';
 
 const app: Express = express();
@@ -15,6 +26,19 @@ app.use(express.static('public', { extensions: ['html'] }));
 
 // -- Routes --------------------------------------------------
 // Register your routes below this line
+
+// comments
+app.post('/comments', createProjectCommentController);
+app.get('/comments', getProjectCommentsController);
+app.get('/comments/:id', getProjectCommentByIdController);
+
+// posts
+app.post('/posts', createPostController);
+app.get('/posts', getPostsController);
+app.get('/posts/:id', getPostByIdController);
+
+//replies
+app.use('/replies', replyRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server listening on http://localhost:${process.env.PORT}`);
