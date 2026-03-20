@@ -114,5 +114,5 @@
   "files.exclude": {
     "**/.gitkeep": true
   },
-  "chat.disableAIFeatures": false
+  "chat.disableAIFeatures": true
 }
