@@ -5,12 +5,19 @@ import {
   getPostByIdController,
   getPostsController,
 } from './controllers/PostController.js';
+
 import {
   createProjectCommentController,
   getProjectCommentByIdController,
   getProjectCommentsController,
 } from './controllers/ProjectCommentController.js';
-import replyRoutes from './routes/ReplyRoutes.js';
+
+import {
+  createReplyController,
+  getReplyByIdController,
+  getReplyController,
+} from './controllers/ReplyController.js';
+
 import { sessionMiddleware } from './sessionConfig.js';
 
 const app: Express = express();
@@ -27,18 +34,20 @@ app.use(express.static('public', { extensions: ['html'] }));
 // -- Routes --------------------------------------------------
 // Register your routes below this line
 
-// comments
-app.post('/comments', createProjectCommentController);
-app.get('/comments', getProjectCommentsController);
-app.get('/comments/:id', getProjectCommentByIdController);
-
-// posts
+//posts
 app.post('/posts', createPostController);
 app.get('/posts', getPostsController);
-app.get('/posts/:id', getPostByIdController);
+app.get('/posts/:postId', getPostByIdController);
+
+//comments
+app.post('/comments', createProjectCommentController);
+app.get('/comments', getProjectCommentsController);
+app.get('/comments/:commentId', getProjectCommentByIdController);
 
 //replies
-app.use('/replies', replyRoutes);
+app.post('/replies', createReplyController);
+app.get('/replies', getReplyByIdController);
+app.get('/replies/:commentId', getReplyController);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server listening on http://localhost:${process.env.PORT}`);

@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-export const createReplySchema = z.object({
-  commentId: z.number(),
-  userId: z.number(),
-  bodyText: z.string().min(1, 'Reply body is required').max(10000, 'reply is too long'),
+const CreateReplySchema = z.object({
+  userId: z.string().min(1).max(50),
+  commentId: z.string().min(1),
+  bodyText: z.string(),
 });
 
-export type CreateRepluInput = z.infer<typeof createReplySchema>;
+export { CreateReplySchema };

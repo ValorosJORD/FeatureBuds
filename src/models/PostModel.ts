@@ -1,35 +1,34 @@
+// src/models/postModel.ts
+//read/write the database
 import { AppDataSource } from '../dataSource.js';
 import { Post } from '../entities/Post.js';
 
 const postRepository = AppDataSource.getRepository(Post);
 
-// create a new post
-const createPost = async (
+// Create -> make post and save...
+async function createPost(
   userId: string,
   title: string,
-  bodyText: string,
   topic: string,
-): Promise<Post> => {
-  const post = new Post();
+  bodyText: string,
+): Promise<Post> {
+  const newPost = new Post();
+  newPost.userId = userId;
+  newPost.title = title;
+  newPost.topic = topic;
+  newPost.bodyText = bodyText;
 
-  post.userId = userId;
-  post.title = title;
-  post.bodyText = bodyText;
-  post.topic = topic;
+  return postRepository.save(newPost);
+}
 
-  return await postRepository.save(post);
-};
+//Get all posts
+async function getAllPosts(): Promise<Post[]> {
+  return postRepository.find();
+}
 
-// get all posts
-const getPosts = async (): Promise<Post[]> => {
-  return await postRepository.find();
-};
+//Get one post by Id
+async function getPostById(postId: string): Promise<Post | null> {
+  return postRepository.findOne({ where: { postId } });
+}
 
-// get post by id
-const getPostById = async (id: string): Promise<Post | null> => {
-  return await postRepository.findOne({
-    where: { id },
-  });
-};
-
-export { createPost, getPostById, getPosts };
+export { createPost, getAllPosts, getPostById };

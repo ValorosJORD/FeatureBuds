@@ -1,25 +1,28 @@
+// src/models/ReplyModel.ts
+//read/write the database
 import { AppDataSource } from '../dataSource.js';
 import { Reply } from '../entities/Reply.js';
 
-const replyRepository = AppDataSource.getRepository(Reply);
+const ReplyRepository = AppDataSource.getRepository(Reply);
 
-//create reply
-const createReply = async (commentId: number, userId: number, bodyText: string): Promise<Reply> => {
-  const reply = new Reply();
+// Create -> make Reply and save...
+async function createReply(userId: string, commentId: string, bodyText: string): Promise<Reply> {
+  const newReply = new Reply();
+  newReply.userId = userId;
+  newReply.commentId = commentId;
+  newReply.bodyText = bodyText;
 
-  reply.commentId = commentId;
-  reply.userId = userId;
-  reply.bodyText = bodyText;
+  return ReplyRepository.save(newReply);
+}
 
-  return await replyRepository.save(reply);
-};
+//Get all replies
+async function getAllReplies(): Promise<Reply[]> {
+  return ReplyRepository.find();
+}
 
-//get replies by comment id
+//Get one reply by Id
+async function getReplyById(replyId: string): Promise<Reply | null> {
+  return ReplyRepository.findOne({ where: { replyId } });
+}
 
-const getRepliesByCommentId = async (commentId: number): Promise<Reply[]> => {
-  return await replyRepository.find({
-    where: { commentId },
-  });
-};
-
-export { createReply, getRepliesByCommentId };
+export { createReply, getAllReplies, getReplyById };

@@ -1,38 +1,47 @@
 import { Request, Response } from 'express';
-import { createReply, getRepliesByCommentId } from '../models/ReplyModel.js';
-import { createReplySchema } from '../validators/ReplyValidators.js';
+import { createReply, getAllReplies, getReplyById } from '../models/ReplyModel.js';
+import { CreateReplySchema } from '../validators/ReplyValidators.js';
 
-// Create reply
-const createReplyController = async (req: Request, res: Response): Promise<void> => {
+async function createReplyController(req: Request, res: Response): Promise<void> {
+  const result = CreateReplySchema.safeParse(req.body);
+  // 400 - Bad request (check input)
+  if (!result.success) {
+    res.status(400).json({ errors: result.error });
+    return;
+  }
+  const { userId, commentId, bodyText } = result.data;
+
   try {
-    const result = createReplySchema.safeParse(req.body);
-    if (!result.success) {
-      res.status(400).json({ error: result.error.issues });
+    const newReply = await createReply(userId, commentId, bodyText);
+    res.status(201).json(newReply); //succcess and return the data
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500); // 500 Internal Server Error
+  }
+}
+
+async function getReplyByIdController(req: Request, res: Response): Promise<void> {
+  try {
+    const result = await getReplyById(req.params.replyId);
+    if (!result) {
+      res.status(404).json({ errors: 'Not Found' });
       return;
     }
-
-    const { commentId, userId, bodyText } = result.data;
-    const reply = await createReply(commentId, userId, bodyText);
-    res.status(201).json(reply);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create reply' });
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
   }
-};
+}
 
-// Get replies by comment id
-const getRepliesByCommentIdController = async (req: Request, res: Response): Promise<void> => {
+async function getReplyController(req: Request, res: Response): Promise<void> {
   try {
-    const commentId = Number(req.params.commentId);
-    if (isNaN(commentId)) {
-      res.status(400).json({ error: 'Invalid comment id' });
-      return;
-    }
-
-    const replies = await getRepliesByCommentId(commentId);
-    res.status(200).json(replies);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to get replies' });
+    const result = await getAllReplies();
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
   }
-};
+}
 
-export { createReplyController, getRepliesByCommentIdController };
+export { createReplyController, getReplyByIdController, getReplyController };

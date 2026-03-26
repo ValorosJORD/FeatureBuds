@@ -1,33 +1,33 @@
+// src/models/ProjectCommentModel.ts
+//read/write the database
 import { AppDataSource } from '../dataSource.js';
 import { ProjectComment } from '../entities/ProjectComment.js';
 
 const projectCommentRepository = AppDataSource.getRepository(ProjectComment);
 
-//create a new comment
-const createProjectComment = async (
-  projectId: string,
+// Create -> make projectComment and save...
+async function createProjectComment(
+  // commentId: string,
   userId: string,
+  // auto-generated (@BeforeInsert()) commentId: string,
   bodyText: string,
-): Promise<ProjectComment> => {
-  const comment = new ProjectComment();
+): Promise<ProjectComment> {
+  const newProjectComment = new ProjectComment();
+  // newProjectComment.commentId = commentId;
+  newProjectComment.userId = userId;
+  newProjectComment.bodyText = bodyText;
 
-  comment.projectId = projectId;
-  comment.userId = userId;
-  comment.bodyText = bodyText;
+  return await projectCommentRepository.save(newProjectComment);
+}
 
-  return await projectCommentRepository.save(comment);
-};
-
-//Get all comments
-const getProjectComments = async (): Promise<ProjectComment[]> => {
+//Get all posts
+async function getProjectComments(): Promise<ProjectComment[]> {
   return await projectCommentRepository.find();
-};
+}
 
-//Get one comment by ID
-const getProjectCommentById = async (id: string): Promise<ProjectComment | null> => {
-  return await projectCommentRepository.findOne({
-    where: { id },
-  });
-};
+//Get one post by Id
+async function getProjectCommentById(commentId: string): Promise<ProjectComment | null> {
+  return projectCommentRepository.findOne({ where: { commentId } });
+}
 
 export { createProjectComment, getProjectCommentById, getProjectComments };

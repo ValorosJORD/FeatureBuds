@@ -1,28 +1,35 @@
+// src/entities/Post.ts
 import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm';
-import { uuidv7 } from 'uuidv7'; //unique ID
+import { v7 as uuidv7 } from 'uuid';
 
 @Entity()
 export class Post {
   @PrimaryColumn()
-  id!: string;
+  postId: string;
 
-  @Column()
-  userId!: string;
-
-  @Column()
-  title!: string;
-
-  @Column()
-  bodyText!: string;
-
-  @Column()
-  topic!: string;
-
-  @CreateDateColumn()
-  createdAt!: Date;
-
+  //ID
   @BeforeInsert()
-  setId() {
-    this.id = uuidv7();
+  generateId(): void {
+    this.postId = uuidv7();
   }
+
+  //who's post
+  @Column()
+  userId: string;
+
+  //title
+  @Column()
+  title: string;
+
+  //categories
+  @Column()
+  topic: string;
+
+  //contents
+  @Column()
+  bodyText: string;
+
+  //time
+  @CreateDateColumn()
+  createdAt: Date;
 }

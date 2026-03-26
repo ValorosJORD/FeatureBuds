@@ -1,24 +1,33 @@
+// src/entities/ProjectComment.ts
 import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm';
-import { uuidv7 } from 'uuidv7'; //unique ID
+import { v7 as uuidv7 } from 'uuid';
+
+//message-ID
+//user
+//body-text
+//Date
+
 @Entity()
 export class ProjectComment {
+  //comment ID
   @PrimaryColumn()
-  id!: string;
+  commentId: string;
 
-  @Column()
-  projectId!: string;
-
-  @Column()
-  userId!: string;
-
-  @Column()
-  bodyText!: string;
-
-  @CreateDateColumn()
-  createdAt!: Date;
-
+  //ID
   @BeforeInsert()
-  setId() {
-    this.id = uuidv7();
+  generateId(): void {
+    this.commentId = uuidv7();
   }
+
+  //user ID
+  @Column()
+  userId: string;
+
+  //contents
+  @Column()
+  bodyText: string;
+
+  //time
+  @CreateDateColumn()
+  createdAt: Date;
 }

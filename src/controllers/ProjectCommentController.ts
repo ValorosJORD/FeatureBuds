@@ -6,49 +6,48 @@ import {
 } from '../models/ProjectCommentModel.js';
 import { createProjectCommentSchema } from '../validators/ProjectCommentValidators.js';
 
-// Create comment
-const createProjectCommentController = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const result = createProjectCommentSchema.safeParse(req.body);
+async function createProjectCommentController(req: Request, res: Response): Promise<void> {
+  const result = createProjectCommentSchema.safeParse(req.body);
+  // 400 - Bad request (check input)
 
-    if (!result.success) {
-      res.status(400).json({ error: result.error.issues });
+  if (!result.success) {
+    res.status(400).json({ errors: result.error });
+    return;
+  }
+  const { userId, bodyText } = result.data;
+
+  try {
+    const newProjectComment = await createProjectComment(userId, bodyText);
+    res.status(201).json(newProjectComment); //succcess and return the data
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500); // 500 Internal Server Error
+  }
+}
+
+async function getProjectCommentByIdController(req: Request, res: Response): Promise<void> {
+  try {
+    const result = await getProjectCommentById(req.params.commentId);
+    if (!result) {
+      res.status(404).json({ errors: 'Not Found' });
       return;
     }
-    const { projectId, userId, bodyText } = result.data;
-
-    const comment = await createProjectComment(projectId, userId, bodyText);
-
-    res.status(201).json(comment);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create comment' });
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
   }
-};
+}
 
-// Get all comments
-const getProjectCommentsController = async (req: Request, res: Response): Promise<void> => {
+async function getProjectCommentsController(req: Request, res: Response): Promise<void> {
   try {
-    const comments = await getProjectComments();
-    res.status(200).json(comments);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to get comments' });
+    const result = await getProjectComments();
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
   }
-};
-// Get comment by id
-const getProjectCommentByIdController = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { id } = req.params;
-    const comment = await getProjectCommentById(id);
-    if (!comment) {
-      res.status(404).json({ error: 'Comment not found' });
-      return;
-    }
-    res.status(200).json(comment);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to get comment' });
-  }
-};
-
+}
 export {
   createProjectCommentController,
   getProjectCommentByIdController,

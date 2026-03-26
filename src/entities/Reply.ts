@@ -1,19 +1,37 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+// src/entities/Reply.ts
+import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import { v7 as uuidv7 } from 'uuid';
+
+//reply-ID
+//commentId
+//userId
+//bodyText
+//createdAt
 
 @Entity()
 export class Reply {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  //comment ID
+  @PrimaryColumn()
+  replyId: string;
 
+  //ID
+  @BeforeInsert()
+  generateId(): void {
+    this.replyId = uuidv7();
+  }
+
+  @Column() // which commment this belongs to
+  commentId: string;
+
+  //user ID
   @Column()
-  commentId!: string;
+  userId: string;
 
+  //contents
   @Column()
-  userId!: string;
+  bodyText: string;
 
-  @Column()
-  bodyText!: string;
-
-  @Column({ nullable: true })
-  createdAt!: Date;
+  //time
+  @CreateDateColumn()
+  createdAt: Date;
 }
