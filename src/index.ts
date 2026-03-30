@@ -48,6 +48,11 @@ app.get('/comments/:commentId', getProjectCommentByIdController);
 app.post('/replies', createReplyController);
 app.get('/replies', getReplyByIdController);
 app.get('/replies/:commentId', getReplyController);
+import { logIn, logOut, registerUser } from './controllers/UserRoutes.js';
+
+app.post('/users', registerUser);
+app.post('/login', logIn);
+app.delete('/sessions', logOut);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server listening on http://localhost:${process.env.PORT}`);
