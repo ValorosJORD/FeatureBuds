@@ -1,5 +1,23 @@
 import express, { Express } from 'express';
 import './config.js'; // do not remove this line
+import {
+  createPostController,
+  getPostByIdController,
+  getPostsController,
+} from './controllers/PostController.js';
+
+import {
+  createProjectCommentController,
+  getProjectCommentByIdController,
+  getProjectCommentsController,
+} from './controllers/ProjectCommentController.js';
+
+import {
+  createReplyController,
+  getReplyByIdController,
+  getReplyController,
+} from './controllers/ReplyController.js';
+
 import { sessionMiddleware } from './sessionConfig.js';
 
 const app: Express = express();
@@ -16,6 +34,20 @@ app.use(express.static('public', { extensions: ['html'] }));
 // -- Routes --------------------------------------------------
 // Register your routes below this line
 
+//posts
+app.post('/posts', createPostController);
+app.get('/posts', getPostsController);
+app.get('/posts/:postId', getPostByIdController);
+
+//comments
+app.post('/comments', createProjectCommentController);
+app.get('/comments', getProjectCommentsController);
+app.get('/comments/:commentId', getProjectCommentByIdController);
+
+//replies
+app.post('/replies', createReplyController);
+app.get('/replies', getReplyByIdController);
+app.get('/replies/:commentId', getReplyController);
 import { logIn, logOut, registerUser } from './controllers/UserRoutes.js';
 
 app.post('/users', registerUser);
