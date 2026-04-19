@@ -20,14 +20,47 @@ async function createProjectComment(
   return await projectCommentRepository.save(newProjectComment);
 }
 
-//Get all posts
+//Get all Comments
 async function getProjectComments(): Promise<ProjectComment[]> {
   return await projectCommentRepository.find();
 }
 
-//Get one post by Id
+//Get one comment by Id
 async function getProjectCommentById(commentId: string): Promise<ProjectComment | null> {
   return projectCommentRepository.findOne({ where: { commentId } });
 }
 
-export { createProjectComment, getProjectCommentById, getProjectComments };
+//update Comment
+async function updateComment(
+  commentId: string,
+  newComment: string,
+): Promise<ProjectComment | null> {
+  const comment = await projectCommentRepository.findOne({ where: { commentId } });
+
+  if (!comment) {
+    return null;
+  }
+
+  comment.bodyText = newComment;
+
+  return projectCommentRepository.save(comment);
+}
+
+//delete Comment
+async function deleteCommentById(commentId: string): Promise<void> {
+  const comment = await projectCommentRepository.findOne({ where: { commentId } });
+
+  if (!comment) {
+    return;
+  }
+
+  await projectCommentRepository.remove(comment);
+}
+
+export {
+  createProjectComment,
+  deleteCommentById,
+  getProjectCommentById,
+  getProjectComments,
+  updateComment,
+};

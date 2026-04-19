@@ -25,4 +25,28 @@ async function getReplyById(replyId: string): Promise<Reply | null> {
   return ReplyRepository.findOne({ where: { replyId } });
 }
 
-export { createReply, getAllReplies, getReplyById };
+//update Reply
+async function updateReply(replyId: string, newReply: string): Promise<Reply | null> {
+  const reply = await ReplyRepository.findOne({ where: { replyId } });
+
+  if (!reply) {
+    return null;
+  }
+
+  reply.bodyText = newReply;
+
+  return ReplyRepository.save(reply);
+}
+
+//delete Comment
+async function deleteReplyById(replyId: string): Promise<void> {
+  const reply = await ReplyRepository.findOne({ where: { replyId } });
+
+  if (!reply) {
+    return;
+  }
+
+  await ReplyRepository.remove(reply);
+}
+
+export { createReply, deleteReplyById, getAllReplies, getReplyById, updateReply };

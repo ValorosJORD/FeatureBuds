@@ -7,4 +7,10 @@ const CreatePostSchema = z.object({
   topic: z.string().min(1),
 });
 
-export { CreatePostSchema };
+const UpdatePostSchema = z.object({
+  title: z.string().min(1).optional(),
+  bodyText: z.string().min(1).optional(),
+  topic: z.string().min(1).optional(),
+});
+
+export { CreatePostSchema, UpdatePostSchema };

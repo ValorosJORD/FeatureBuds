@@ -6,4 +6,8 @@ const CreateReplySchema = z.object({
   bodyText: z.string(),
 });
 
-export { CreateReplySchema };
+const UpdateReplySchema = z.object({
+  bodyText: z.string().min(1).optional(),
+});
+
+export { CreateReplySchema, UpdateReplySchema };

@@ -31,4 +31,28 @@ async function getPostById(postId: string): Promise<Post | null> {
   return postRepository.findOne({ where: { postId } });
 }
 
-export { createPost, getAllPosts, getPostById };
+//update Post
+async function updatePost(postId: string, newPost: string): Promise<Post | null> {
+  const post = await postRepository.findOne({ where: { postId } });
+
+  if (!post) {
+    return null;
+  }
+
+  post.bodyText = newPost;
+
+  return postRepository.save(post);
+}
+
+//delete Post
+async function deletePostById(postId: string): Promise<void> {
+  const post = await postRepository.findOne({ where: { postId } });
+
+  if (!post) {
+    return;
+  }
+
+  await postRepository.remove(post);
+}
+
+export { createPost, deletePostById, getAllPosts, getPostById, updatePost };
