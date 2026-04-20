@@ -1,6 +1,13 @@
 import { Request, Response } from 'express';
-import { createReply, getAllReplies, getReplyById } from '../models/ReplyModel.js';
-import { CreateReplySchema } from '../validators/ReplyValidators.js';
+import {
+  createReply,
+  deleteReplyById,
+  getAllReplies,
+  getReplyById,
+  updateReply,
+} from '../models/ReplyModel.js';
+import { parseDatabaseError } from '../utils/db-utils.js';
+import { CreateReplySchema, UpdateReplySchema } from '../validators/ReplyValidators.js';
 
 async function createReplyController(req: Request, res: Response): Promise<void> {
   const result = CreateReplySchema.safeParse(req.body);
@@ -44,4 +51,48 @@ async function getReplyController(req: Request, res: Response): Promise<void> {
   }
 }
 
-export { createReplyController, getReplyByIdController, getReplyController };
+//update
+async function patchReplyController(req: Request, res: Response): Promise<void> {
+  const { replyId } = req.params;
+
+  const result = UpdateReplySchema.safeParse(req.body);
+  if (!result.success) {
+    res.status(400).json({ errors: result.error });
+    return;
+  }
+
+  try {
+    const updatedReply = await updateReply(replyId, result.data.bodyText);
+    if (!updatedReply) {
+      res.status(404).json({ error: 'Reply not found' });
+      return;
+    }
+    res.json({ post: updatedReply });
+  } catch (err) {
+    console.error(err);
+    const databaseErrorMessage = parseDatabaseError(err);
+    res.status(500).json(databaseErrorMessage);
+  }
+}
+
+//delete
+async function deleteReplyController(req: Request, res: Response): Promise<void> {
+  const { replyId } = req.params;
+  const reply = await getReplyById(replyId);
+
+  if (!reply) {
+    res.status(404).json({ error: 'Reply not found' });
+    return;
+  }
+
+  await deleteReplyById(replyId);
+  res.sendStatus(204); // 204 No Content — successful, nothing to return
+}
+
+export {
+  createReplyController,
+  deleteReplyController,
+  getReplyByIdController,
+  getReplyController,
+  patchReplyController,
+};
