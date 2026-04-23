@@ -16,11 +16,27 @@ app.use(express.static('public', { extensions: ['html'] }));
 // -- Routes --------------------------------------------------
 // Register your routes below this line
 
-import { logIn, logOut, registerUser } from './controllers/UserRoutes.js';
+import { getMe, logIn, logOut, registerUser, RemoveUserAccount } from './controllers/UserRoutes.js';
 
 app.post('/users', registerUser);
-app.post('/login', logIn);
+app.post('/api/login', logIn);
 app.delete('/sessions', logOut);
+app.post('/:userId/delete', RemoveUserAccount);
+app.get('/api/me', getMe);
+
+import { AccessAllProjects, AccessProject, CreateProject } from './controllers/ProjectRoutes.js';
+app.post('/projects', CreateProject);
+app.get('/api/projects/:projectId', AccessProject);
+app.get('/api/projects', AccessAllProjects);
+
+import {
+  AccessPermissionByProjectId,
+  AccessPermissionByUserId,
+  CreatePermission,
+} from './controllers/PermissionRoutes.js';
+app.post('/projects/:projectId/permissions', CreatePermission);
+app.get('/projects/:projectId/permissions', AccessPermissionByProjectId);
+app.get('/users/:userId/projects', AccessPermissionByUserId);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server listening on http://localhost:${process.env.PORT}`);

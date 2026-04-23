@@ -14,7 +14,6 @@ export async function addUser(
   newUser.passwordHash = passwordHash;
   newUser.username = username;
   newUser.name = name;
-  // userId is generated automatically by @BeforeInsert
 
   return userRepository.save(newUser);
 }
@@ -25,4 +24,12 @@ export async function getUserById(userId: string): Promise<User | null> {
 
 export async function getUserByEmail(email: string): Promise<User | null> {
   return userRepository.findOne({ where: { email } });
+}
+
+export async function deleteUser(email: string, passwordHash: string): Promise<void> {
+  const user = await userRepository.findOne({ where: { email, passwordHash } });
+  if (!user) {
+    return;
+  }
+  await userRepository.remove(user);
 }

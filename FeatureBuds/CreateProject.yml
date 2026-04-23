@@ -1,0 +1,22 @@
+info:
+  name: CreateProject
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://localhost:9812/projects
+  body:
+    type: json
+    data: |-
+      {
+        "title": "project2",
+        "description": "even cooler project."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

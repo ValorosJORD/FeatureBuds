@@ -1,0 +1,26 @@
+info:
+  name: CreatePermission
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: http://localhost:9812/projects/:projectId/permissions
+  params:
+    - name: projectId
+      value: 019d73d8-26ca-76ee-8e98-1d679f3c71da
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "userId": "019d0781-3838-729c-81ac-887f16e9f251",
+        "permissionType": "EDITOR"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

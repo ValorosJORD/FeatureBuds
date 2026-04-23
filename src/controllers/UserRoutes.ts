@@ -1,7 +1,7 @@
-// src/controllers/UserController.ts
+// src/controllers/UserRoutes.ts
 import argon2 from 'argon2';
 import { Request, Response } from 'express';
-import { addUser, getUserByEmail } from '../models/UserModel.js';
+import { addUser, deleteUser, getUserByEmail } from '../models/UserModel.js';
 import { parseDatabaseError } from '../utils/db-utils.js';
 import { LogInSchema, RegistrationSchema } from '../validators/authValidator.js';
 
@@ -50,7 +50,11 @@ export async function logIn(req: Request, res: Response): Promise<void> {
 
     await req.session.clearSession();
 
-    req.session.authenticatedUser = { userId: user.userId, email: user.email };
+    req.session.authenticatedUser = {
+      userId: user.userId,
+      email: user.email,
+      displayName: user.username,
+    };
     req.session.isLoggedIn = true;
 
     res.sendStatus(200);
@@ -67,5 +71,44 @@ export async function logOut(req: Request, res: Response): Promise<void> {
     console.log('No logged in user.');
   }
   await req.session.clearSession();
-  res.sendStatus(204); // 204 No Content — successful, nothing to return
+  res.sendStatus(204);
+}
+
+export async function RemoveUserAccount(req: Request, res: Response): Promise<void> {
+  const result = LogInSchema.safeParse(req.body);
+  if (!result.success) {
+    res.status(400).json(result.error.flatten());
+    return;
+  }
+
+  const { email, password } = result.data;
+
+  try {
+    const user = await getUserByEmail(email);
+    if (!user) {
+      res.sendStatus(403);
+      return;
+    }
+
+    const { passwordHash } = user;
+    if (!(await argon2.verify(passwordHash, password))) {
+      res.sendStatus(403);
+      return;
+    }
+
+    await deleteUser(email, passwordHash);
+    res.sendStatus(200);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+}
+
+export function getMe(req: Request, res: Response): void {
+  if (!req.session.isLoggedIn) {
+    res.sendStatus(401);
+    return;
+  }
+
+  res.json(req.session.authenticatedUser);
 }
