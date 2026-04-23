@@ -18,7 +18,9 @@
     const id = page.params.projectId;
     const result = await api.get<Project>(`/projects/${id}`);
 
-    project = result;
+    if (result.ok) {
+      project = result.data;
+    }
 
     loading = false;
   });

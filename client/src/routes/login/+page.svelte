@@ -1,8 +1,9 @@
 <!-- client/src/routes/login/+page.svelte -->
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import type { Response } from '$lib/api';
+  import type { ApiResponse } from '$lib/api';
   import { api } from '$lib/api';
+  import { auth } from '$lib/auth.svelte';
   import { toast } from '$lib/toast.svelte';
 
   let email = $state('');
@@ -13,7 +14,7 @@
     event.preventDefault();
     submitting = true;
 
-    const result = await api.post<Response>('/login', { email, password });
+    const result = await api.post<ApiResponse>('/login', { email, password });
 
     submitting = false;
 
@@ -26,6 +27,8 @@
       toast.error('Something went wrong');
       return;
     }
+
+    await auth.isLoggedIn;
 
     goto('/');
   }

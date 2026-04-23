@@ -16,7 +16,9 @@
   onMount(async () => {
     const result = await api.get<Project[]>('/projects');
 
-    projects = result;
+    if (result.ok) {
+      projects = result.data;
+    }
 
     loading = false;
   });

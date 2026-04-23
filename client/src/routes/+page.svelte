@@ -1,6 +1,5 @@
 <script lang="ts">
   import { auth } from '$lib/auth.svelte';
-  import { toast } from '$lib/toast.svelte';
 </script>
 
 <h1>Welcome</h1>
@@ -19,9 +18,11 @@
   <ol>
     <li>Add API routes in <code>src/index.ts</code> under the <code>/api</code> prefix.</li>
     <li>Build pages under <code>client/src/routes/</code>.</li>
-    <li>Call your API from pages with <code>import &#123; api &#125; from '$lib/api'</code>.</li>
+    <li><a href="/projects">View Projects</a></li>
   </ol>
   <footer>
-    <button type="button" onclick={() => toast.success('Toasts work!')}>Try a toast</button>
+    <a href="/login" class="button-link">
+      <button>Login Now</button>
+    </a>
   </footer>
 </article>
