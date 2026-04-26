@@ -1,11 +1,31 @@
+<script lang="ts">
+  import { auth } from '$lib/auth.svelte';
+
+  let id = $state();
+
+  async function accountClicked(): Promise<void> {
+    if (auth.user) {
+      id = auth.user.userId;
+    }
+  }
+</script>
+
 <nav class="navbar">
   <ul>
-    <li class="contrast-text"><strong>Acme Corp</strong></li>
+    <li><a href="/" class="contrast-text"><strong>FeatureBuds</strong></a></li>
   </ul>
   <ul>
-    <li><a href="/" class="contrast-text">About</a></li>
-    <li><a href="/" class="contrast-text">Services</a></li>
-    <li><a href="/" class="contrast-text">Products</a></li>
+    <li><a href="/projects" class="contrast-text">Projects</a></li>
+    <li><a href="/posts" class="contrast-text">Forum</a></li>
+    <li>
+      {#if auth.loading}
+        <p aria-busy="true" class="contrast-text">Checking session…</p>
+      {:else if auth.user}
+        <a onclick={accountClicked} href="/users/{id}" class="contrast-text">Account</a>
+      {:else}
+        <a href="/login" class="contrast-text">Login/Register</a>
+      {/if}
+    </li>
   </ul>
 </nav>
 

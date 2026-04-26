@@ -14,12 +14,25 @@
   let project: Project | null = $state(null);
   let loading = $state(true);
 
+  let Cdate = $state();
+  let Ctime = $state();
+  let Edate = $state();
+  let Etime = $state();
+
   onMount(async () => {
     const id = page.params.projectId;
     const result = await api.get<Project>(`/projects/${id}`);
 
     if (result.ok) {
       project = result.data;
+      const createdAt = new Date(project.createdAt);
+      const lastEdited = new Date(project.lastEdited);
+
+      Cdate = createdAt.toDateString();
+      Ctime = createdAt.toTimeString();
+
+      Edate = lastEdited.toDateString();
+      Etime = lastEdited.toTimeString();
     }
 
     loading = false;
@@ -29,10 +42,12 @@
 {#if loading}
   <loading></loading>
 {:else if !project}
-  <p>Household not found.</p>
+  <p>Project not found.</p>
 {:else}
-  <h1>{project.title}</h1>
-  <p>{project.description}</p>
-  <p>{project.createdAt.toDateString} at {project.createdAt.toTimeString}</p>
-  <p>{project.lastEdited}</p>
+  <article>
+    <h1>{project.title}</h1>
+    <p>{project.description}</p>
+    <p>Project Created: <strong>{Cdate}</strong> <em>at</em> <strong>{Ctime}</strong></p>
+    <p>Project Last Edited: <strong>{Edate}</strong> <em>at</em> <strong>{Etime}</strong></p>
+  </article>
 {/if}

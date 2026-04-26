@@ -27,12 +27,19 @@
 {#if loading}
   <loading></loading>
 {:else if projects.length === 0}
-  <p>You haven't joined any households yet.</p>
+  <p>No projects currently exist.</p>
 {:else}
   <ul>
     {#each projects as project (project.projectId)}
-      <li>
-        <a href="/projects/{project.projectId}">{project.title}</a>
+      <li style="list-style-type: none;">
+        <article>
+          <a href="/projects/{project.projectId}">
+            <h1 class="contrast-text">
+              <strong>{project.title}</strong>
+            </h1>
+          </a>
+          <p>{project.description}</p>
+        </article>
       </li>
     {/each}
   </ul>

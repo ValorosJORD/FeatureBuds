@@ -1,9 +1,9 @@
 // src/controllers/UserRoutes.ts
 import argon2 from 'argon2';
 import { Request, Response } from 'express';
-import { addUser, deleteUser, getUserByEmail } from '../models/UserModel.js';
+import { addUser, deleteUser, getUserByEmail, getUserById } from '../models/UserModel.js';
 import { parseDatabaseError } from '../utils/db-utils.js';
-import { LogInSchema, RegistrationSchema } from '../validators/authValidator.js';
+import { LogInSchema, RegistrationSchema, UserIdSchema } from '../validators/authValidator.js';
 
 export async function registerUser(req: Request, res: Response): Promise<void> {
   const result = RegistrationSchema.safeParse(req.body);
@@ -101,6 +101,35 @@ export async function RemoveUserAccount(req: Request, res: Response): Promise<vo
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
+  }
+}
+
+export async function AccessUserById(req: Request, res: Response): Promise<void> {
+  const result = UserIdSchema.safeParse(req.params);
+  if (!result.success) {
+    res.status(400).json(result.error.flatten());
+    return;
+  }
+
+  const { userId } = result.data;
+
+  if (req.session.authenticatedUser.userId != userId) {
+    res.sendStatus(403);
+    return;
+  }
+
+  try {
+    const user = await getUserById(userId);
+    if (user === null) {
+      res.status(404).json('User Not Found.');
+    } else {
+      console.log(user);
+      res.status(200).json(user);
+    }
+  } catch (err) {
+    console.error(err);
+    const databaseErrorMessage = parseDatabaseError(err);
+    res.status(500).json(databaseErrorMessage);
   }
 }
 

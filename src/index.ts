@@ -41,7 +41,7 @@ app.use(express.static('public', { extensions: ['html'] }));
 // Register your routes below this line
 //posts
 app.post('/posts', createPostController);
-app.get('/posts', getPostsController);
+app.get('/api/posts', getPostsController);
 app.get('/posts/:postId', getPostByIdController);
 app.patch('/posts/:postId', patchPostController);
 app.delete('/posts/:postId', deletePostController);
@@ -60,12 +60,20 @@ app.get('/replies/:replyId', getReplyByIdController);
 app.patch('/replies/:replyId', patchReplyController);
 app.delete('/replies/:replyId', deleteReplyController);
 
-import { getMe, logIn, logOut, registerUser, RemoveUserAccount } from './controllers/UserRoutes.js';
+import {
+  AccessUserById,
+  getMe,
+  logIn,
+  logOut,
+  registerUser,
+  RemoveUserAccount,
+} from './controllers/UserRoutes.js';
 
 app.post('/users', registerUser);
 app.post('/api/login', logIn);
-app.delete('/sessions', logOut);
+app.delete('/api/sessions', logOut);
 app.post('/:userId/delete', RemoveUserAccount);
+app.get('/api/users/:userId', AccessUserById);
 app.get('/api/me', getMe);
 
 import { AccessAllProjects, AccessProject, CreateProject } from './controllers/ProjectRoutes.js';
