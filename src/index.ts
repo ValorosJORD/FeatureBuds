@@ -40,25 +40,25 @@ app.use(express.static('public', { extensions: ['html'] }));
 // -- Routes --------------------------------------------------
 // Register your routes below this line
 //posts
-app.post('/posts', createPostController);
+app.post('/api/posts', createPostController);
 app.get('/api/posts', getPostsController);
-app.get('/posts/:postId', getPostByIdController);
-app.patch('/posts/:postId', patchPostController);
-app.delete('/posts/:postId', deletePostController);
+app.get('/api/posts/:postId', getPostByIdController);
+app.patch('/api/posts/:postId', patchPostController);
+app.delete('/api/posts/:postId', deletePostController);
 
 //comments
-app.post('/comments', createProjectCommentController);
-app.get('/comments', getProjectCommentsController);
-app.get('/comments/:commentId', getProjectCommentByIdController);
-app.patch('/comments/:commentId', patchCommentController);
-app.delete('/comments/:commentId', deleteProjectCommentController);
+app.post('/api/comments', createProjectCommentController);
+app.get('/api/comments', getProjectCommentsController);
+app.get('/api/comments/:commentId', getProjectCommentByIdController);
+app.patch('/api/comments/:commentId', patchCommentController);
+app.delete('/api/comments/:commentId', deleteProjectCommentController);
 
 //replies
-app.post('/replies', createReplyController);
-app.get('/replies', getReplyController);
-app.get('/replies/:replyId', getReplyByIdController);
-app.patch('/replies/:replyId', patchReplyController);
-app.delete('/replies/:replyId', deleteReplyController);
+app.post('/api/replies', createReplyController);
+app.get('/api/replies', getReplyController);
+app.get('/api/replies/:replyId', getReplyByIdController);
+app.patch('/api/replies/:replyId', patchReplyController);
+app.delete('/api/replies/:replyId', deleteReplyController);
 
 import {
   AccessUserById,

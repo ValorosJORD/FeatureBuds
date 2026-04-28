@@ -32,7 +32,12 @@ async function getPostById(postId: string): Promise<Post | null> {
 }
 
 //update Post
-async function updatePost(postId: string, newPost: string): Promise<Post | null> {
+async function updatePost(
+  postId: string,
+  newPost: string,
+  title: string,
+  topic: string,
+): Promise<Post | null> {
   const post = await postRepository.findOne({ where: { postId } });
 
   if (!post) {
@@ -40,6 +45,8 @@ async function updatePost(postId: string, newPost: string): Promise<Post | null>
   }
 
   post.bodyText = newPost;
+  post.title = title;
+  post.topic = topic;
 
   return postRepository.save(post);
 }
