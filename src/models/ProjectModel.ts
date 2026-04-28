@@ -17,7 +17,10 @@ export async function addProject(
 }
 
 export async function getProjectById(projectId: string): Promise<Project | null> {
-  return projectRepository.findOne({ where: { projectId } });
+  return await projectRepository.findOne({
+    where: { projectId },
+    relations: { projectFiles: true },
+  });
 }
 
 export async function getAllProjects(): Promise<Project[]> {

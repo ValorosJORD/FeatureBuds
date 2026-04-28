@@ -24,6 +24,12 @@
 
     if (result.ok) {
       projects = result.data;
+      projects.sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+
+        return dateB.getTime() - dateA.getTime();
+      });
     }
 
     loading = false;
@@ -81,6 +87,7 @@
 </Modal>
 
 <article style="max-width: fit-content; margin-inline: auto;">
+  <h3>Interested in creating a project?</h3>
   <button onclick={() => (isOpen = true)}>Create your own project now!</button>
 </article>
 

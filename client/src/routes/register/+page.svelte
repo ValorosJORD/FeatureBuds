@@ -7,14 +7,14 @@
   let email = $state('');
   let password = $state('');
   let username = $state('');
-  let name = $state('');
+  let name = $state();
   let submitting = $state(false);
 
   async function handleSubmit(event: Event): Promise<void> {
     event.preventDefault();
     submitting = true;
 
-    const result = await api.post('/api/users', { email, password });
+    const result = await api.post('/users', { email, password, username, name });
 
     submitting = false;
 

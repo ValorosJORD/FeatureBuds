@@ -1,7 +1,72 @@
 @import '@picocss/pico/css/pico.min.css';
 
 :root {
+  background-image: url('/backgroundimg/backgroundmain.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+  margin: 0;
   --pico-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --pico-primary: #757575;
+  --pico-primary-hover: #9e9e9e;
+  --pico-primary-focus: rgba(117, 117, 117, 0.25);
+  --pico-primary-inverse: #fff;
+  --pico-primary-background: #474951;
+  --pico-primary-underline: rgba(117, 117, 117, 0.25);
+  --pico-primary-hover-background: #9e9e9e;
+  --pico-primary-hover-border: #9e9e9e;
+}
+
+/* Grey Light scheme (Default) */
+/* Can be forced with data-theme="light" */
+[data-theme='light'],
+:root:not([data-theme='dark']) {
+  --pico-primary: #757575;
+  --pico-primary-hover: #616161;
+  --pico-primary-focus: rgba(117, 117, 117, 0.125);
+  --pico-primary-inverse: #fff;
+  --pico-primary-background: #474951;
+  --pico-primary-underline: rgba(117, 117, 117, 0.25);
+  --pico-primary-hover-background: #9e9e9e;
+  --pico-primary-hover-border: #9e9e9e;
+}
+
+/* Grey Dark scheme (Auto) */
+/* Automatically enabled if user has Dark mode enabled */
+@media only screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --pico-primary: #757575;
+    --pico-primary-hover: #9e9e9e;
+    --pico-primary-focus: rgba(117, 117, 117, 0.25);
+    --pico-primary-inverse: #fff;
+    --pico-primary-background: #474951;
+    --pico-primary-underline: rgba(117, 117, 117, 0.25);
+    --pico-primary-hover-background: #9e9e9e;
+    --pico-primary-hover-border: #9e9e9e;
+  }
+}
+
+/* Grey Dark scheme (Forced) */
+/* Enabled if forced with data-theme="dark" */
+[data-theme='dark'] {
+  --pico-primary: #757575;
+  --pico-primary-hover: #9e9e9e;
+  --pico-primary-focus: rgba(117, 117, 117, 0.25);
+  --pico-primary-inverse: #fff;
+  --pico-primary-background: #474951;
+  --pico-primary-underline: rgba(117, 117, 117, 0.25);
+  --pico-primary-hover-background: #9e9e9e;
+  --pico-primary-hover-border: #9e9e9e;
+}
+
+/* Grey (Common styles) */
+:root {
+  --pico-form-element-active-border-color: var(--pico-primary);
+  --pico-form-element-focus-color: var(--pico-primary-focus);
+  --pico-switch-color: var(--pico-primary-inverse);
+  --pico-switch-checked-background-color: var(--pico-primary);
 }
 
 main.container {
