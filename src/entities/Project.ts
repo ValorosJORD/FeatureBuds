@@ -3,10 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
+import { ProjectFile } from './ProjectFile.js';
 
 @Entity()
 export class Project {
@@ -29,4 +32,7 @@ export class Project {
 
   @UpdateDateColumn()
   lastEdited: Date;
+
+  @OneToMany(() => ProjectFile, (projectFile) => projectFile.project)
+  projectFiles: Relation<ProjectFile>[];
 }

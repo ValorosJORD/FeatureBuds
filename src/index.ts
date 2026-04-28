@@ -69,17 +69,33 @@ import {
   RemoveUserAccount,
 } from './controllers/UserRoutes.js';
 
-app.post('/users', registerUser);
+app.post('/api/users', registerUser);
 app.post('/api/login', logIn);
 app.delete('/api/sessions', logOut);
 app.post('/:userId/delete', RemoveUserAccount);
 app.get('/api/users/:userId', AccessUserById);
 app.get('/api/me', getMe);
 
-import { AccessAllProjects, AccessProject, CreateProject } from './controllers/ProjectRoutes.js';
-app.post('/projects', CreateProject);
+import {
+  AccessAllProjects,
+  AccessProject,
+  CreateProject,
+  ProjectFileUpload,
+} from './controllers/ProjectRoutes.js';
+app.post('/api/projects', requireAuth, CreateProject);
 app.get('/api/projects/:projectId', AccessProject);
 app.get('/api/projects', AccessAllProjects);
+
+import { requireAuth } from './middleware/AuthRequire.js';
+import { uploadErrorHandler, uploadProjectFile } from './uploadConfig.js';
+
+app.post(
+  '/api/projects/:projectId',
+  requireAuth,
+  uploadProjectFile.single('file'),
+  ProjectFileUpload,
+  uploadErrorHandler,
+);
 
 import {
   AccessPermissionByProjectId,

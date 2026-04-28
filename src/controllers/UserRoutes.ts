@@ -53,7 +53,7 @@ export async function logIn(req: Request, res: Response): Promise<void> {
     req.session.authenticatedUser = {
       userId: user.userId,
       email: user.email,
-      displayName: user.username,
+      username: user.username,
     };
     req.session.isLoggedIn = true;
 
@@ -138,6 +138,8 @@ export function getMe(req: Request, res: Response): void {
     res.sendStatus(401);
     return;
   }
+
+  console.log(`SESSION USER:`, req.session.authenticatedUser);
 
   res.json(req.session.authenticatedUser);
 }

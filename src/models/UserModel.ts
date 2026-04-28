@@ -15,15 +15,15 @@ export async function addUser(
   newUser.username = username;
   newUser.name = name;
 
-  return userRepository.save(newUser);
+  return await userRepository.save(newUser);
 }
 
 export async function getUserById(userId: string): Promise<User | null> {
-  return userRepository.findOne({ where: { userId } });
+  return await userRepository.findOne({ where: { userId } });
 }
 
 export async function getUserByEmail(email: string): Promise<User | null> {
-  return userRepository.findOne({ where: { email } });
+  return await userRepository.findOne({ where: { email } });
 }
 
 export async function deleteUser(email: string, passwordHash: string): Promise<void> {

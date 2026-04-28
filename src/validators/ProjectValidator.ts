@@ -8,3 +8,7 @@ export const ProjectCreationSchema = z.object({
 export const ProjectIdSchema = z.object({
   projectId: z.string(),
 });
+
+export const FileBodySchema = z.object({
+  caption: z.string().max(200).optional(),
+});

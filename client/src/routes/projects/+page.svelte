@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { api } from '$lib/api';
+  import { toast } from '$lib/toast.svelte';
   import { onMount } from 'svelte';
 
   interface Project {
@@ -9,6 +11,10 @@
     createdAt: Date;
     lastEdited: Date;
   }
+
+  import Modal from '$lib/components/Modal.svelte';
+
+  let isOpen = $state(false);
 
   let projects: Project[] = $state([]);
   let loading = $state(true);
@@ -22,7 +28,61 @@
 
     loading = false;
   });
+
+  let title = $state('');
+  let description = $state('');
+  let submitting = $state(false);
+
+  async function handleSubmit(event: Event): Promise<void> {
+    event.preventDefault();
+    submitting = true;
+
+    const result = await api.post<Project>(`/projects`, {
+      title,
+      description,
+    });
+
+    submitting = false;
+
+    if (result.status === 401) {
+      toast.show('Please log in to continue', 'error');
+      goto('/login');
+      return;
+    }
+
+    if (!result.ok) {
+      toast.show('Failed to create project', 'error');
+      return;
+    }
+
+    const { projectId } = result.data;
+
+    toast.show('Item created!', 'success');
+    goto(`/projects/${projectId}`);
+  }
 </script>
+
+<Modal bind:open={isOpen} title="Project Creation">
+  <form onsubmit={handleSubmit}>
+    <label>
+      Title
+      <input type="text" bind:value={title} required />
+    </label>
+
+    <label>
+      Description
+      <textarea bind:value={description}></textarea>
+    </label>
+
+    <button type="submit" disabled={submitting}>
+      {submitting ? 'Creating...' : 'Create Project'}
+    </button>
+  </form>
+</Modal>
+
+<article style="max-width: fit-content; margin-inline: auto;">
+  <button onclick={() => (isOpen = true)}>Create your own project now!</button>
+</article>
 
 {#if loading}
   <loading></loading>

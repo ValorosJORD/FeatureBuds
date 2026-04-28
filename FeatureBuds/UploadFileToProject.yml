@@ -1,0 +1,27 @@
+info:
+  name: UploadFileToProject
+  type: http
+  seq: 11
+
+http:
+  method: POST
+  url: http://localhost:9812/api/projects/:projectId
+  params:
+    - name: projectId
+      value: 019d73d8-26ca-76ee-8e98-1d679f3c71da
+      type: path
+  body:
+    type: multipart-form
+    data:
+      - name: file
+        type: file
+        value:
+          - C:\Users\james\Downloads\bassine.mp3
+        contentType: File
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -8,7 +8,7 @@
 {#if auth.loading}
   <p aria-busy="true">Checking session…</p>
 {:else if auth.user}
-  <p>Signed in as <strong>{auth.user.displayName}</strong> ({auth.user.email}).</p>
+  <p>Signed in as <strong>{auth.user.username}</strong> ({auth.user.email}).</p>
 {:else}
   <p>You are not signed in.</p>
 {/if}
