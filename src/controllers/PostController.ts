@@ -52,7 +52,9 @@ async function patchPostController(req: Request, res: Response): Promise<void> {
   }
 
   try {
-    const updatedPost = await updatePost(postId, result.data.bodyText);
+    const { title, topic, bodyText } = result.data;
+    //3 entities might be changed
+    const updatedPost = await updatePost(postId, bodyText, title, topic);
     if (!updatedPost) {
       res.status(404).json({ error: 'Post not found' });
       return;
