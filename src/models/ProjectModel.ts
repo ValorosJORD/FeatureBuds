@@ -31,6 +31,7 @@ export async function addFileToProject(
   projectId: string,
   filePath: string,
   fileSize: number,
+  originalName: string,
 ): Promise<Project | null> {
   const project = await projectRepository.findOne({
     where: { projectId },
@@ -45,6 +46,7 @@ export async function addFileToProject(
   projectFile.project = project;
   projectFile.filePath = filePath;
   projectFile.fileSize = fileSize;
+  projectFile.originalName = originalName;
 
   await projectFileRepository.save(projectFile);
 

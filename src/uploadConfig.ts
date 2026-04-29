@@ -27,8 +27,8 @@ const projectFileFilter = (
     console.log(`Passed`);
   } else {
     cb(null, false); // reject silently — handled in the controller
-    console.log(file);
-    console.log(file.originalname);
+    //console.log(file);
+    //console.log(file.originalname);
   }
 };
 

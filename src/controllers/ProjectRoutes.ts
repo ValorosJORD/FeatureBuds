@@ -75,7 +75,9 @@ export async function AccessAllProjects(req: Request, res: Response): Promise<vo
 }
 
 export async function ProjectFileUpload(req: Request, res: Response): Promise<void> {
-  if (!req.file) {
+  const files = req.files as Express.Multer.File[];
+
+  if (!files || files.length === 0) {
     res.status(400).json({ error: 'No file uploaded or file rejected' });
     return;
   }
@@ -89,22 +91,25 @@ export async function ProjectFileUpload(req: Request, res: Response): Promise<vo
 
   const parseResult = FileBodySchema.safeParse(req.body);
   if (!parseResult.success) {
-    await fs.unlink(req.file.path); // clean up the orphan file
+    await Promise.all(files.map((f) => fs.unlink(f.path)));
     res.status(400).json(parseResult.error);
     return;
   }
 
   try {
-    const updated = await addFileToProject(projectId, req.file.path, req.file.size);
-    if (!updated) {
-      await fs.unlink(req.file.path);
+    const uploadResults = await Promise.all(
+      files.map((file) => addFileToProject(projectId, file.path, file.size, file.originalname)),
+    );
+    if (uploadResults.includes(null)) {
+      await Promise.all(files.map((f) => fs.unlink(f.path)));
+      console.log('Failed with null upload');
       res.sendStatus(404);
       return;
     }
-    res.status(201).json(updated);
+    res.status(201).json(uploadResults);
   } catch (err) {
     console.error(err);
-    await fs.unlink(req.file.path);
+    await Promise.all(files.map((f) => fs.unlink(f.path)));
     res.sendStatus(500);
   }
 }

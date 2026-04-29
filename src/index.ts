@@ -1,4 +1,7 @@
 import express, { Express } from 'express';
+
+import path from 'path';
+
 import './config.js'; // do not remove this line
 import {
   createPostController,
@@ -28,9 +31,17 @@ import { sessionMiddleware } from './sessionConfig.js';
 
 const app: Express = express();
 
+app.get('/debug-file', (req, res) => {
+  res.sendFile(
+    path.resolve(process.cwd(), 'uploads/projects/019dd675-2a2d-76b3-9810-e44187ed3ddc.mp3'),
+  );
+});
+
 app.use(sessionMiddleware); // Setup session management middleware
 app.use(express.json()); // Setup JSON body parsing middleware
 app.use(express.urlencoded({ extended: false })); // Setup urlencoded (HTML Forms) body parsing middleware
+
+app.use('/uploads', express.static('uploads'));
 
 // Setup static resource file middleware
 // This allows the client to access any file inside the `public` directory
@@ -92,7 +103,7 @@ import { uploadErrorHandler, uploadProjectFile } from './uploadConfig.js';
 app.post(
   '/api/projects/:projectId',
   requireAuth,
-  uploadProjectFile.single('file'),
+  uploadProjectFile.array('files'),
   ProjectFileUpload,
   uploadErrorHandler,
 );
@@ -105,6 +116,9 @@ import {
 app.post('/projects/:projectId/permissions', CreatePermission);
 app.get('/projects/:projectId/permissions', AccessPermissionByProjectId);
 app.get('/users/:userId/projects', AccessPermissionByUserId);
+
+import { AccessFile } from './controllers/FileRoutes.js';
+app.get('/api/uploads/projects/:filePath', AccessFile);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server listening on http://localhost:${process.env.PORT}`);
