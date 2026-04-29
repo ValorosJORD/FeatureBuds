@@ -1,4 +1,3 @@
-// PLACEHOLDER FOR WHEN I FIGURE OUT WHAT I'M DOING WITH MULTER
 import {
   Column,
   CreateDateColumn,

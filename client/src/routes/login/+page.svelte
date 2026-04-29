@@ -28,6 +28,8 @@
       return;
     }
 
+    auth.setUser(auth.user);
+
     await auth.refresh();
 
     goto('/');
