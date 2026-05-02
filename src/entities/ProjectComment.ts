@@ -9,6 +9,10 @@ import { v7 as uuidv7 } from 'uuid';
 
 @Entity()
 export class ProjectComment {
+  @Column({ nullable: true })
+  // 開発中はエラーを防ぐために nullable にしている
+  projectId: string;
+
   //comment ID
   @PrimaryColumn()
   commentId: string;

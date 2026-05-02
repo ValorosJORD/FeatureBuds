@@ -5,6 +5,7 @@
   import Modal from '$lib/components/Modal.svelte';
   import { uploadFiles } from '$lib/upload';
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
 
   let isOpen = $state(false);
   let selectedFile: ProjectFile | null = $state(null);
@@ -42,6 +43,22 @@
     projectFiles: ProjectFile[];
   }
 
+  interface Comment {
+    projectId: string;
+    commentId: string;
+    userId: string;
+    bodyText: string;
+    createdAt: string;
+  }
+
+  interface Reply {
+    replyId: string;
+    commentId: string;
+    userId: string;
+    bodyText: string;
+    createdAt: string;
+  }
+
   let project: Project | null = $state(null);
   let loading = $state(true);
 
@@ -52,9 +69,14 @@
 
   let pFiles: ProjectFile[] = $state([]);
 
+  let comments: Comment[] = $state([]);
+  let replies: Reply[] = $state([]);
+
   onMount(async () => {
     const id = page.params.projectId;
     const result = await api.get<Project>(`/projects/${id}`);
+    const comment = await api.get<Comment[]>(`/projects/${id}/comments`);
+    const reply = await api.get<Reply[]>('/replies');
 
     if (result.ok) {
       project = result.data;
@@ -72,9 +94,25 @@
       console.log(project);
     }
 
+    if(comment.ok){
+      comments = comment.data;
+      console.log(' COMMENTS: ', comments);
+    } else{
+      console.error('Failed to get comments')
+    }
+
+    if(reply.ok){
+      replies = reply.data;
+      console.log(' REPLIES: ', replies);
+    } else{
+      console.error('Failed to get replies')
+    }
+
     loading = false;
   });
 
+  
+  
   async function handleUpload() {
     if (files.length === 0) return;
     if (!project || !project.projectId) return;
@@ -102,6 +140,8 @@
       uploading = false;
     }
   }
+
+
 </script>
 
 {#if loading}
@@ -114,6 +154,7 @@
     <p>{project.description}</p>
     <p>Project Created: <strong>{Cdate}</strong> <em>at</em> <strong>{Ctime}</strong></p>
     <p>Project Last Edited: <strong>{Edate}</strong> <em>at</em> <strong>{Etime}</strong></p>
+
   </article>
 
   <article>
@@ -145,6 +186,36 @@
   </article>
 {/if}
 
+  <article style="margin-top: 1rem;">
+  <h1>Comments</h1>
+    {#if comments.length > 0}
+      {#each comments as comment}
+        <div class="comment-card">
+          <small>User: {comment.userId}</small>
+          <small>Date: {comment.createdAt}</small>
+          <p>Comment: {comment.bodyText}</p>
+          <button class="replyButton" onclick={() => goto(`/projects/${project.projectId}/comments/${comment.commentId}/replies/create`)}>
+            Reply to this message
+          </button>
+          {#each replies.filter((reply) => reply.commentId === comment.commentId) as reply}
+            <div class="reply-card">
+              <small>User: {reply.userId}</small>
+              <small>Date: {reply.createdAt}</small>
+              <p>Reply: {reply.bodyText}</p>
+            </div>
+          {/each}
+        </div>
+      {/each}
+    {:else}
+      <p>No comments...</p>
+    {/if}
+    {#if project}
+      <button onclick={() => goto(`/projects/${project.projectId}/comments/Create`)}>
+        Comment to this post!!
+      </button>
+    {/if}
+  </article>
+
 {#if selectedFile}
   <Modal bind:open={isOpen} title={selectedFile?.originalName}>
     {#if selectedFile}
@@ -154,3 +225,31 @@
     {/if}
   </Modal>
 {/if}
+
+<style>
+  .comment-card {
+    border-bottom: 1px solid gray;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+  }
+
+  .replyButton{
+    background: none;
+    border: none;
+    padding: 0;
+    color: gray;
+    text-decoration: underline;
+  }
+
+  .reply-card{
+    margin-left: 20px;
+    font-size: small;
+  }
+</style>
+
+
+
+
+        
+  
+

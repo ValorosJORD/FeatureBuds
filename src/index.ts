@@ -58,8 +58,8 @@ app.patch('/api/posts/:postId', patchPostController);
 app.delete('/api/posts/:postId', deletePostController);
 
 //comments
-app.post('/api/comments', createProjectCommentController);
-app.get('/api/comments', getProjectCommentsController);
+app.post('/api/projects/:projectId/comments', createProjectCommentController);
+app.get('/api/projects/:projectId/comments', getProjectCommentsController);
 app.get('/api/comments/:commentId', getProjectCommentByIdController);
 app.patch('/api/comments/:commentId', patchCommentController);
 app.delete('/api/comments/:commentId', deleteProjectCommentController);

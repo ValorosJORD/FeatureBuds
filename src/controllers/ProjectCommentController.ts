@@ -20,10 +20,12 @@ async function createProjectCommentController(req: Request, res: Response): Prom
     res.status(400).json({ errors: result.error });
     return;
   }
+
+  const projectId = req.params.projectId;
   const { userId, bodyText } = result.data;
 
   try {
-    const newProjectComment = await createProjectComment(userId, bodyText);
+    const newProjectComment = await createProjectComment(projectId, userId, bodyText);
     res.status(201).json(newProjectComment); //succcess and return the data
   } catch (err) {
     console.error(err);
@@ -47,7 +49,7 @@ async function getProjectCommentByIdController(req: Request, res: Response): Pro
 
 async function getProjectCommentsController(req: Request, res: Response): Promise<void> {
   try {
-    const result = await getProjectComments();
+    const result = await getProjectComments(req.params.projectId);
     res.status(200).json(result);
   } catch (err) {
     console.error(err);

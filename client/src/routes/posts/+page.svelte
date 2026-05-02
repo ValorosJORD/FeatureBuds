@@ -52,11 +52,27 @@
 
 <style>
   .post-card {
-    border: 1px solid black;
+    border: 1px solid white;
     border-radius: 10px;
     padding: 10px;
     margin-bottom: 10px;
+
+    color: white;
   }
+  h1, h2, p, a{
+    color: white;
+  }
+  a{
+    text-decoration: underline;
+  }
+
+  button {
+    color: white;
+    border: 1px solid white;
+    margin-bottom: 20px;
+  }
+
+
 </style>
 
 

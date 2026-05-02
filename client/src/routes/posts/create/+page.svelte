@@ -1,22 +1,40 @@
 <script lang='ts'>
   import {goto} from '$app/navigation';
   import { api } from '$lib/api';
+  import { onMount } from 'svelte';
+
 
   let title = $state('');
   let topic = $state('');
   let bodyText = $state('');
   let submitting = $state(false);
   let created = $state(false);
+  let userId = $state('');
+
+  onMount(async () => {
+    const user = await api.get<{ userId: string }>('/me');
+    if (user.ok) {
+      userId = user.data.userId;
+    }
+  });
 
   async function handleSubmit(event: Event): Promise<void> {
       event.preventDefault();
       submitting = true;
       created = false;
 
-      const result = await api.post('/api/posts',{
+      if(!userId){
+        console.error('User not logged yet');
+        submitting = false;
+        return;
+      }
+      
+
+      const result = await api.post('/posts',{
         title,
         topic,
-        bodyText
+        bodyText,
+        userId
       });
 
       if (!result.ok) {
@@ -59,3 +77,13 @@
 </form>
 
 <p><a href="/posts">Back to posts</a></p>
+
+<style>
+  h1, label, p, a{
+    color: white;
+  }
+
+  input, textarea {
+    color: black;
+  }
+</style>

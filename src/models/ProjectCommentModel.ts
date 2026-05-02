@@ -7,6 +7,7 @@ const projectCommentRepository = AppDataSource.getRepository(ProjectComment);
 
 // Create -> make projectComment and save...
 async function createProjectComment(
+  projectId: string,
   // commentId: string,
   userId: string,
   // auto-generated (@BeforeInsert()) commentId: string,
@@ -14,6 +15,8 @@ async function createProjectComment(
 ): Promise<ProjectComment> {
   const newProjectComment = new ProjectComment();
   // newProjectComment.commentId = commentId;
+
+  newProjectComment.projectId = projectId;
   newProjectComment.userId = userId;
   newProjectComment.bodyText = bodyText;
 
@@ -21,8 +24,10 @@ async function createProjectComment(
 }
 
 //Get all Comments
-async function getProjectComments(): Promise<ProjectComment[]> {
-  return await projectCommentRepository.find();
+async function getProjectComments(projectId: string): Promise<ProjectComment[]> {
+  return await projectCommentRepository.find({
+    where: { projectId },
+  });
 }
 
 //Get one comment by Id

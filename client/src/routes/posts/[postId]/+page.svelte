@@ -87,3 +87,11 @@
   {/if}
 
 <p><a href="/posts">Back to Posts</a></p>
+
+
+<style>
+  h1, label, p, a{
+    color: white;
+  }
+
+</style>
