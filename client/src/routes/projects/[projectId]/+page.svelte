@@ -194,7 +194,10 @@
           <small>User: {comment.userId}</small>
           <small>Date: {comment.createdAt}</small>
           <p>Comment: {comment.bodyText}</p>
-          <button class="replyButton" onclick={() => goto(`/projects/${project.projectId}/comments/${comment.commentId}/replies/create`)}>
+          <button class="commentButton" onclick={() => goto(`/projects/${page.params.projectId}/comments/${comment.commentId}`)}>
+            Update or Delete Comment
+          </button>
+          <button class="reply-Button" onclick={() => goto(`/projects/${project.projectId}/comments/${comment.commentId}/replies/create`)}>
             Reply to this message
           </button>
           {#each replies.filter((reply) => reply.commentId === comment.commentId) as reply}
@@ -202,6 +205,9 @@
               <small>User: {reply.userId}</small>
               <small>Date: {reply.createdAt}</small>
               <p>Reply: {reply.bodyText}</p>
+              <button class="replyButton" onclick={() => goto(`/projects/${page.params.projectId}/comments/${comment.commentId}/replies/${reply.replyId}`)}>
+                Update or Delete Reply
+              </button>
             </div>
           {/each}
         </div>
@@ -233,17 +239,34 @@
     padding-bottom: 15px;
   }
 
+  .commentButton{
+    background: none;
+    border: none;
+    padding: 0;
+    color: gray;
+    font-size: 0.75rem;
+  }
+
   .replyButton{
     background: none;
     border: none;
     padding: 0;
     color: gray;
-    text-decoration: underline;
+    font-size: 0.7rem;
   }
 
   .reply-card{
     margin-left: 20px;
     font-size: small;
+  }
+
+
+  .reply-Button{
+    background: none;
+    border: none;
+    color: gray;
+    text-decoration: underline;
+    
   }
 </style>
 
