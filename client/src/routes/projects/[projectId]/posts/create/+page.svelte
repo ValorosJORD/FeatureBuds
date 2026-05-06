@@ -2,6 +2,7 @@
   import {goto} from '$app/navigation';
   import { api } from '$lib/api';
   import { onMount } from 'svelte';
+  import { page } from '$app/state';
 
 
   let title = $state('');
@@ -11,6 +12,7 @@
   let created = $state(false);
   let userId = $state('');
 
+  const projectId = page.params.projectId;
   onMount(async () => {
     const user = await api.get<{ userId: string }>('/me');
     if (user.ok) {
@@ -31,6 +33,7 @@
       
 
       const result = await api.post('/posts',{
+        projectId,
         title,
         topic,
         bodyText,
@@ -42,11 +45,9 @@
         submitting = false;
         return;
       }
-      const newPost = result.data;
       submitting = false;
       created = true;
-
-      goto(`/posts/${newPost.postId}`);
+      goto(`/projects/${projectId}/posts`);
   }
 </script>
 
@@ -76,7 +77,7 @@
   </button>
 </form>
 
-<p><a href="/posts">Back to posts</a></p>
+<p><a href={`/projects/${projectId}/posts`}>Back to posts</a></p>
 
 <style>
   h1, label, p, a{

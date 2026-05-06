@@ -8,6 +8,7 @@ import {
   deletePostController,
   getPostByIdController,
   getPostsController,
+  getProjectPostsController,
   patchPostController,
 } from './controllers/PostController.js';
 
@@ -56,6 +57,7 @@ app.use(express.static('public', { extensions: ['html'] }));
 app.post('/api/posts', createPostController);
 app.get('/api/posts', getPostsController);
 app.get('/api/posts/:postId', getPostByIdController);
+app.get('/api/projects/:projectId/posts', getProjectPostsController);
 app.patch('/api/posts/:postId', patchPostController);
 app.delete('/api/posts/:postId', deletePostController);
 

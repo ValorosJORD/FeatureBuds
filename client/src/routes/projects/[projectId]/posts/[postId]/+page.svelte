@@ -17,6 +17,8 @@
   let updated = $state(false);
   let deleted = $state(false);
 
+  const projectId = page.params.projectId;
+
   const postId = page.params.postId;
 
   onMount(async () => {
@@ -52,7 +54,7 @@
       updated = false;
       deleted = true;
 
-      goto('/posts')
+      goto(`/projects/${projectId}/posts`);
 
     }
   }
@@ -86,7 +88,7 @@
     <p>Post Updated</p>
   {/if}
 
-<p><a href="/posts">Back to Posts</a></p>
+<p><a href={`/projects/${projectId}/posts`}>Back to Posts</a></p>
 
 
 <style>

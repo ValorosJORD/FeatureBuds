@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 const CreatePostSchema = z.object({
+  projectId: z.string(),
   userId: z.string().min(1).max(50),
   title: z.string().min(1),
   bodyText: z.string().min(1),
