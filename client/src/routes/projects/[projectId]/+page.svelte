@@ -43,6 +43,15 @@
     projectFiles: ProjectFile[];
   }
 
+  interface Post {
+    postId: string;
+    userId: string;
+    title: string;
+    topic: string;
+    bodyText: string;
+    createdAt: string;
+  }
+
   interface Comment {
     projectId: string;
     commentId: string;
@@ -69,6 +78,8 @@
 
   let pFiles: ProjectFile[] = $state([]);
 
+  let posts: Post[] = $state([]);
+
   let comments: Comment[] = $state([]);
   let replies: Reply[] = $state([]);
 
@@ -77,6 +88,7 @@
     const result = await api.get<Project>(`/projects/${id}`);
     const comment = await api.get<Comment[]>(`/projects/${id}/comments`);
     const reply = await api.get<Reply[]>('/replies');
+    const post = await api.get<{ result: Post[] }>(`/projects/${id}/posts`);
 
     if (result.ok) {
       project = result.data;
@@ -94,6 +106,12 @@
       console.log(project);
     }
 
+    if(post.ok){
+      posts = post.data.result;
+      console.log(' POSTS: ', posts);
+    } else{
+      console.error('Failed to get posts')
+    }
     if(comment.ok){
       comments = comment.data;
       console.log(' COMMENTS: ', comments);
@@ -156,6 +174,31 @@
     <p>Project Last Edited: <strong>{Edate}</strong> <em>at</em> <strong>{Etime}</strong></p>
 
   </article>
+
+  <article>
+    <h1>Posts</h1>
+    <p>Project posts</p>
+
+    {#if posts.length > 0}
+      {#each posts as post}
+        <div class="post-card">
+        <h1>{post.title}</h1>
+        <p>{post.bodyText}</p>
+        <button class="post-button" onclick={() => goto(`/projects/${project.projectId}/posts/${post.postId}`)}>
+          View Post
+        </button>
+        </div>
+      {/each}
+    {:else}
+      <p>No posts yet...</p>
+    {/if}
+    <button onclick={() => goto(`/projects/${project.projectId}/posts/create`)}>
+      Create new post
+    </button>
+
+  </article>
+
+
 
   <article>
     <FileUpload
@@ -267,6 +310,19 @@
     color: gray;
     text-decoration: underline;
     
+  }
+
+  .post-card {
+    border-bottom: 1px solid gray;
+    padding-bottom: 20px;
+    margin-bottom: 15px;
+  }
+
+  .post-button {
+    background: none;
+    border: none;
+    color: gray;
+    text-decoration: underline;
   }
 </style>
 

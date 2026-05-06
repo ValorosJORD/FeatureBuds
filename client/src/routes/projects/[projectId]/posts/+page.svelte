@@ -3,6 +3,7 @@
   import Loading from '$lib/components/Loading.svelte';
   import { api } from '$lib/api';
   import { goto } from '$app/navigation';
+  import { page } from '$app/state';
 
   interface Post {
     postId: string;
@@ -16,9 +17,9 @@
   let posts: Post[] = $state([]);
   let loading = $state(true);
 
+  const projectId = page.params.projectId;
   onMount(async() => {
-    const result = await api.get<{ result: Post[] }>('/posts');
-
+    const result = await api.get<{ result: Post[] }>(`/projects/${projectId}/posts`);
     if (result.ok) {
       posts = result.data.result;
     }
@@ -27,8 +28,10 @@
   </script>
 
   <h1>Posts</h1>
-
-  <button onclick={() => goto('/posts/create')}>
+  <p>
+    <a href={`/projects/${projectId}`}>Back to Project</a>
+  </p>
+  <button onclick={() => goto(`/projects/${projectId}/posts/create`)}>
     Create a Post
   </button>
 
@@ -45,7 +48,7 @@
       <p>Created:{post.createdAt}</p>
       <p>Topic:{post.topic}</p>
       <p>{post.bodyText}</p>
-      <a href={`/posts/${post.postId}`}>View details</a>
+      <a href={`/projects/${projectId}/posts/${post.postId}`}>View details</a>
     </div>
   {/each}
 {/if}

@@ -13,6 +13,10 @@ export class Post {
     this.postId = uuidv7();
   }
 
+  @Column({ nullable: true })
+  projectId: string;
+  //プロジェクトIDがなくてもエラーにしない。
+
   //who's post
   @Column()
   userId: string;

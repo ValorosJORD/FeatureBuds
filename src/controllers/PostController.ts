@@ -4,6 +4,7 @@ import {
   deletePostById,
   getAllPosts,
   getPostById,
+  getPostsByProjectId,
   updatePost,
 } from '../models/PostModel.js';
 import { parseDatabaseError } from '../utils/db-utils.js';
@@ -17,8 +18,8 @@ async function createPostController(req: Request, res: Response): Promise<void> 
     res.status(400).json({ errors: result.error });
     return;
   }
-  const { userId, title, topic, bodyText } = result.data;
-  const newPost = await createPost(userId, title, topic, bodyText);
+  const { projectId, userId, title, topic, bodyText } = result.data;
+  const newPost = await createPost(projectId, userId, title, topic, bodyText);
   console.log(newPost);
   res.status(201).json(newPost);
 }
@@ -38,6 +39,12 @@ async function getPostByIdController(req: Request, res: Response): Promise<void>
     res.status(404).json({ errors: 'Not Found' });
     return;
   }
+  res.status(200).json({ result });
+}
+
+async function getProjectPostsController(req: Request, res: Response): Promise<void> {
+  const { projectId } = req.params;
+  const result = await getPostsByProjectId(projectId);
   res.status(200).json({ result });
 }
 
@@ -86,5 +93,6 @@ export {
   deletePostController,
   getPostByIdController,
   getPostsController,
+  getProjectPostsController,
   patchPostController,
 };

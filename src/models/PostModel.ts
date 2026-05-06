@@ -7,12 +7,14 @@ const postRepository = AppDataSource.getRepository(Post);
 
 // Create -> make post and save...
 async function createPost(
+  projectId: string,
   userId: string,
   title: string,
   topic: string,
   bodyText: string,
 ): Promise<Post> {
   const newPost = new Post();
+  newPost.projectId = projectId;
   newPost.userId = userId;
   newPost.title = title;
   newPost.topic = topic;
@@ -29,6 +31,12 @@ async function getAllPosts(): Promise<Post[]> {
 //Get one post by Id
 async function getPostById(postId: string): Promise<Post | null> {
   return postRepository.findOne({ where: { postId } });
+}
+
+async function getPostsByProjectId(projectId: string): Promise<Post[]> {
+  return postRepository.find({
+    where: { projectId },
+  });
 }
 
 //update Post
@@ -62,4 +70,4 @@ async function deletePostById(postId: string): Promise<void> {
   await postRepository.remove(post);
 }
 
-export { createPost, deletePostById, getAllPosts, getPostById, updatePost };
+export { createPost, deletePostById, getAllPosts, getPostById, getPostsByProjectId, updatePost };
