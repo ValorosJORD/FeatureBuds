@@ -1,9 +1,9 @@
 import { api } from './api';
 
 export interface User {
-  userId: string;
+  id: string;
   email: string;
-  username: string;
+  displayName: string;
 }
 
 class AuthStore {
@@ -14,8 +14,7 @@ class AuthStore {
     this.loading = true;
     try {
       const res = await api.get<User>('/me');
-      console.log(res.data);
-      this.user = res.ok ? res.data : null;
+      this.user = res.data;
     } catch {
       this.user = null;
     } finally {

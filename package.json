@@ -16,7 +16,9 @@
     "start-once": "node --es-module-specifier-resolution=node --no-warnings ./dist/index.js",
     "lint": "eslint .",
     "sync": "npx tsx scripts/sync.ts",
-    "postinstall": "cd client && npm install --no-audit --no-fund"
+    "postinstall": "cd client && npm install --no-audit --no-fund",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "npm test -- --watch"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

@@ -41,6 +41,8 @@ app.use(sessionMiddleware); // Setup session management middleware
 app.use(express.json()); // Setup JSON body parsing middleware
 app.use(express.urlencoded({ extended: false })); // Setup urlencoded (HTML Forms) body parsing middleware
 
+app.use(express.static('frontend/build'));
+
 app.use('/uploads', express.static('uploads'));
 
 // Setup static resource file middleware
@@ -113,9 +115,9 @@ import {
   AccessPermissionByUserId,
   CreatePermission,
 } from './controllers/PermissionRoutes.js';
-app.post('/projects/:projectId/permissions', CreatePermission);
-app.get('/projects/:projectId/permissions', AccessPermissionByProjectId);
-app.get('/users/:userId/projects', AccessPermissionByUserId);
+app.post('/api/projects/:projectId/permissions', CreatePermission);
+app.get('/api/projects/:projectId/permissions', AccessPermissionByProjectId);
+app.get('/api/users/:userId/projects', AccessPermissionByUserId);
 
 import { AccessFile } from './controllers/FileRoutes.js';
 app.get('/api/uploads/projects/:filePath', AccessFile);
