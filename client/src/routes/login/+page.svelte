@@ -1,7 +1,6 @@
 <!-- client/src/routes/login/+page.svelte -->
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import type { ApiResponse } from '$lib/api';
   import { api } from '$lib/api';
   import { auth } from '$lib/auth.svelte';
   import { toast } from '$lib/toast.svelte';
@@ -14,12 +13,16 @@
     event.preventDefault();
     submitting = true;
 
-    const result = await api.post<ApiResponse>('/login', { email, password });
+    const result = await api.post<string>('/login', { email, password });
 
     submitting = false;
 
     if (result.status === 403) {
-      toast.error('Invalid email or password');
+      if (result.data == `Bad Email`) {
+        toast.error('Try new email.');
+      } else if (result.data == `Bad Password`) {
+        toast.error('Try new password.');
+      }
       return;
     }
 

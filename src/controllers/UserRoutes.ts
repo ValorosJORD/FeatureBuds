@@ -38,13 +38,13 @@ export async function logIn(req: Request, res: Response): Promise<void> {
   try {
     const user = await getUserByEmail(email);
     if (!user) {
-      res.sendStatus(403);
+      res.status(403).json('Bad Email');
       return;
     }
 
     const { passwordHash } = user;
     if (!(await argon2.verify(passwordHash, password))) {
-      res.sendStatus(403);
+      res.status(403).json('Bad Password');
       return;
     }
 
