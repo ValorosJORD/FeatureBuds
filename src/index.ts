@@ -131,8 +131,8 @@ app.listen(process.env.PORT, () => {
   console.log(`Server listening on http://localhost:${process.env.PORT}`);
 });
 
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(__dirname));
 
 app.get('/{*any}', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
