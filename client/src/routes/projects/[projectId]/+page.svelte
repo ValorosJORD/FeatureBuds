@@ -89,7 +89,7 @@
     const id = page.params.projectId;
     const result = await api.get<Project>(`/projects/${id}`);
     const comment = await api.get<Comment[]>(`/projects/${id}/comments`);
-    const reply = await api.get<Reply[]>('/,,,,,,replies');
+    const reply = await api.get<Reply[]>('/replies');
     const post = await api.get<{ result: Post[] }>(`/projects/${id}/posts`);
 
     if (result.ok) {
@@ -321,11 +321,7 @@
     background: none;
     border: none;
     color: gray;
-<<<<<<< HEAD
-    text-decoration: underline;
-=======
-    
->>>>>>> 4ce72dcf4671f6b39b32b4ad86ab41f8e8b0127c
+    text-decoration: none;
   }
 
   .post-card {
