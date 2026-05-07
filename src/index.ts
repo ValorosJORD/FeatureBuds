@@ -1,6 +1,9 @@
 import express, { Express } from 'express';
-
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import './config.js'; // do not remove this line
 import {
@@ -126,4 +129,10 @@ app.get('/api/uploads/projects/:filePath', AccessFile);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server listening on http://localhost:${process.env.PORT}`);
+});
+
+app.use(express.static(path.join(__dirname, 'dist')));
+
+app.get('/{*any}', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
