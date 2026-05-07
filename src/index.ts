@@ -134,5 +134,5 @@ app.listen(process.env.PORT, () => {
 app.use(express.static(__dirname));
 
 app.get('/{*any}', (req, res) => {
-  res.sendFile(path.join(__dirname, 'FeatureBuds', 'index.html'));
+  res.sendFile(path.join(__dirname, 'client/dist/index.html'));
 });
