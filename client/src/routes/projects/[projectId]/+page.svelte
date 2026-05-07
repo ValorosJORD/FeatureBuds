@@ -11,7 +11,7 @@
   let selectedFile: ProjectFile | null = $state(null);
 
   function openFile(file: ProjectFile) {
-    selectedFile = file;
+    selectedFile = file;    
     isOpen = true;
   }
 
@@ -87,7 +87,7 @@
     const id = page.params.projectId;
     const result = await api.get<Project>(`/projects/${id}`);
     const comment = await api.get<Comment[]>(`/projects/${id}/comments`);
-    const reply = await api.get<Reply[]>('/replies');
+    const reply = await api.get<Reply[]>('/,,,,,,replies');
     const post = await api.get<{ result: Post[] }>(`/projects/${id}/posts`);
 
     if (result.ok) {
@@ -241,7 +241,7 @@
             Update or Delete Comment
           </button>
           <button class="reply-Button" onclick={() => goto(`/projects/${project.projectId}/comments/${comment.commentId}/replies/create`)}>
-            Reply to this message
+            > Reply to this message
           </button>
           {#each replies.filter((reply) => reply.commentId === comment.commentId) as reply}
             <div class="reply-card">
@@ -308,7 +308,6 @@
     background: none;
     border: none;
     color: gray;
-    text-decoration: underline;
     
   }
 
