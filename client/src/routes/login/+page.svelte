@@ -17,6 +17,10 @@
 
     submitting = false;
 
+    if (result.status === 400) {
+      toast.error('Email must be valid format and password must be at least 8 characters');
+    }
+
     if (result.status === 403) {
       if (result.data == `Bad Email`) {
         toast.error('Try new email.');

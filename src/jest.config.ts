@@ -1,4 +1,4 @@
-import type { Config } from 'jest';
+/*import type { Config } from 'jest';
 
 const config: Config = {
   preset: 'ts-jest/presets/default-esm', // TS + ES modules
@@ -10,3 +10,4 @@ const config: Config = {
 };
 
 export default config;
+*/

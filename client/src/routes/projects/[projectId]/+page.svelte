@@ -1,11 +1,13 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import { api } from '$lib/api';
+  import { auth } from '$lib/auth.svelte';
   import FileUpload from '$lib/components/FileUpload.svelte';
   import Modal from '$lib/components/Modal.svelte';
+  import { toast } from '$lib/toast.svelte';
   import { uploadFiles } from '$lib/upload';
   import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
 
   let isOpen = $state(false);
   let selectedFile: ProjectFile | null = $state(null);
@@ -106,31 +108,29 @@
       console.log(project);
     }
 
-    if(post.ok){
+    if (post.ok) {
       posts = post.data.result;
       console.log(' POSTS: ', posts);
-    } else{
-      console.error('Failed to get posts')
+    } else {
+      console.error('Failed to get posts');
     }
-    if(comment.ok){
+    if (comment.ok) {
       comments = comment.data;
       console.log(' COMMENTS: ', comments);
-    } else{
-      console.error('Failed to get comments')
+    } else {
+      console.error('Failed to get comments');
     }
 
-    if(reply.ok){
+    if (reply.ok) {
       replies = reply.data;
       console.log(' REPLIES: ', replies);
-    } else{
-      console.error('Failed to get replies')
+    } else {
+      console.error('Failed to get replies');
     }
 
     loading = false;
   });
 
-  
-  
   async function handleUpload() {
     if (files.length === 0) return;
     if (!project || !project.projectId) return;
@@ -152,14 +152,16 @@
 
       console.log('Upload success:', result);
       files = []; // clear after upload
+
+      await auth.refresh();
+      goto(`/projects/${project.projectId}`);
     } catch (err) {
       console.error('Upload failed:', err);
+      toast.error('Upload Failed');
     } finally {
       uploading = false;
     }
   }
-
-
 </script>
 
 {#if loading}
@@ -172,7 +174,6 @@
     <p>{project.description}</p>
     <p>Project Created: <strong>{Cdate}</strong> <em>at</em> <strong>{Ctime}</strong></p>
     <p>Project Last Edited: <strong>{Edate}</strong> <em>at</em> <strong>{Etime}</strong></p>
-
   </article>
 
   <article>
@@ -182,11 +183,14 @@
     {#if posts.length > 0}
       {#each posts as post}
         <div class="post-card">
-        <h1>{post.title}</h1>
-        <p>{post.bodyText}</p>
-        <button class="post-button" onclick={() => goto(`/projects/${project.projectId}/posts/${post.postId}`)}>
-          View Post
-        </button>
+          <h1>{post.title}</h1>
+          <p>{post.bodyText}</p>
+          <button
+            class="post-button"
+            onclick={() => goto(`/projects/${project.projectId}/posts/${post.postId}`)}
+          >
+            View Post
+          </button>
         </div>
       {/each}
     {:else}
@@ -195,10 +199,7 @@
     <button onclick={() => goto(`/projects/${project.projectId}/posts/create`)}>
       Create new post
     </button>
-
   </article>
-
-
 
   <article>
     <FileUpload
@@ -229,41 +230,54 @@
   </article>
 {/if}
 
-  <article style="margin-top: 1rem;">
+<article style="margin-top: 1rem;">
   <h1>Comments</h1>
-    {#if comments.length > 0}
-      {#each comments as comment}
-        <div class="comment-card">
-          <small>User: {comment.userId}</small>
-          <small>Date: {comment.createdAt}</small>
-          <p>Comment: {comment.bodyText}</p>
-          <button class="commentButton" onclick={() => goto(`/projects/${page.params.projectId}/comments/${comment.commentId}`)}>
-            Update or Delete Comment
-          </button>
-          <button class="reply-Button" onclick={() => goto(`/projects/${project.projectId}/comments/${comment.commentId}/replies/create`)}>
-            Reply to this message
-          </button>
-          {#each replies.filter((reply) => reply.commentId === comment.commentId) as reply}
-            <div class="reply-card">
-              <small>User: {reply.userId}</small>
-              <small>Date: {reply.createdAt}</small>
-              <p>Reply: {reply.bodyText}</p>
-              <button class="replyButton" onclick={() => goto(`/projects/${page.params.projectId}/comments/${comment.commentId}/replies/${reply.replyId}`)}>
-                Update or Delete Reply
-              </button>
-            </div>
-          {/each}
-        </div>
-      {/each}
-    {:else}
-      <p>No comments...</p>
-    {/if}
-    {#if project}
-      <button onclick={() => goto(`/projects/${project.projectId}/comments/Create`)}>
-        Comment to this post!!
-      </button>
-    {/if}
-  </article>
+  {#if comments.length > 0}
+    {#each comments as comment}
+      <div class="comment-card">
+        <small>User: {comment.userId}</small>
+        <small>Date: {comment.createdAt}</small>
+        <p>Comment: {comment.bodyText}</p>
+        <button
+          class="commentButton"
+          onclick={() => goto(`/projects/${page.params.projectId}/comments/${comment.commentId}`)}
+        >
+          Update or Delete Comment
+        </button>
+        <button
+          class="reply-Button"
+          onclick={() =>
+            goto(`/projects/${project.projectId}/comments/${comment.commentId}/replies/create`)}
+        >
+          Reply to this message
+        </button>
+        {#each replies.filter((reply) => reply.commentId === comment.commentId) as reply}
+          <div class="reply-card">
+            <small>User: {reply.userId}</small>
+            <small>Date: {reply.createdAt}</small>
+            <p>Reply: {reply.bodyText}</p>
+            <button
+              class="replyButton"
+              onclick={() =>
+                goto(
+                  `/projects/${page.params.projectId}/comments/${comment.commentId}/replies/${reply.replyId}`,
+                )}
+            >
+              Update or Delete Reply
+            </button>
+          </div>
+        {/each}
+      </div>
+    {/each}
+  {:else}
+    <p>No comments...</p>
+  {/if}
+  {#if project}
+    <button onclick={() => goto(`/projects/${project.projectId}/comments/Create`)}>
+      Comment to this post!!
+    </button>
+  {/if}
+</article>
 
 {#if selectedFile}
   <Modal bind:open={isOpen} title={selectedFile?.originalName}>
@@ -282,7 +296,7 @@
     padding-bottom: 15px;
   }
 
-  .commentButton{
+  .commentButton {
     background: none;
     border: none;
     padding: 0;
@@ -290,7 +304,7 @@
     font-size: 0.75rem;
   }
 
-  .replyButton{
+  .replyButton {
     background: none;
     border: none;
     padding: 0;
@@ -298,18 +312,16 @@
     font-size: 0.7rem;
   }
 
-  .reply-card{
+  .reply-card {
     margin-left: 20px;
     font-size: small;
   }
 
-
-  .reply-Button{
+  .reply-Button {
     background: none;
     border: none;
     color: gray;
     text-decoration: underline;
-    
   }
 
   .post-card {
@@ -325,10 +337,3 @@
     text-decoration: underline;
   }
 </style>
-
-
-
-
-        
-  
-
